@@ -1,2 +1,2 @@
-<input type="file" id="input" (change)="handleFileInput($event.target.files)">
-<canvas style="width:100%;" id="overlay"></canvas>
+<input type="file" accept="image/*" id="input" (change)="handleFileInput($event.target.files)">
+<canvas style="width:100%;" id="overlay" (click)="exportAsImage()"></canvas>

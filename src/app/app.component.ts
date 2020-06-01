@@ -1,4 +1,5 @@
 import { Component, Output } from '@angular/core';
+import { saveAs } from 'file-saver';
 
 // per https://github.com/justadudewhohacks/face-api.js/issues/519#issuecomment-578485852
 //import * as faceapi from 'face-api.js';
@@ -13,7 +14,7 @@ declare var faceapi:any;
 export class AppComponent {
   title = 'face-block';
 
-  fileToUpload: File = null;
+  file: File = null;
 
   async ngOnInit() {
     await faceapi.loadTinyFaceDetectorModel('assets/models');
@@ -37,10 +38,21 @@ export class AppComponent {
   }
 
   async handleFileInput(files: FileList) {
-    this.fileToUpload = files.item(0);
+    this.file = files.item(0);
     let input = document.createElement("img");
-    let url = window.URL.createObjectURL(this.fileToUpload);
+    let url = window.URL.createObjectURL(this.file);
     input.src = url;
     this.blockFaces(input);
+  }
+
+  exportAsImage() {
+    if (this.file == null) {
+      return;
+    }
+    let filetype = this.file.type;
+    let filename = "censored_" + this.file.name;
+    let output = <HTMLCanvasElement>document.getElementById('overlay');
+    var image = output.toDataURL(filetype);
+    saveAs(image, filename);
   }
 }
