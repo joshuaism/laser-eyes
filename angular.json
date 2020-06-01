@@ -26,7 +26,9 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [ "./node_modules/face-api.js/dist/face-api.min.js" ]
+            "scripts": [
+              "./node_modules/face-api.js/dist/face-api.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -90,7 +92,9 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [ "./node_modules/face-api.js/dist/face-api.min.js" ]
+            "scripts": [
+              "./node_modules/face-api.js/dist/face-api.min.js"
+            ]
           }
         },
         "lint": {
@@ -117,8 +121,13 @@
               "devServerTarget": "face-block:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {}
         }
       }
-    }},
+    }
+  },
   "defaultProject": "face-block"
 }
