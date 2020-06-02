@@ -1,5 +1,6 @@
-import { Component, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { saveAs } from 'file-saver';
+import { MatSlider } from '@angular/material/slider'
 
 // per https://github.com/justadudewhohacks/face-api.js/issues/519#issuecomment-578485852
 //import * as faceapi from 'face-api.js';
@@ -23,34 +24,46 @@ export class AppComponent {
     this.ready = true;
   }
 
-  async blockFaces(input : HTMLImageElement) {
-    input.onload = async function() {
+  async blockFaces(confidence: number) {
+    if (this.file) {
+      this.hideDownloadButton();
       let output = <HTMLCanvasElement>document.getElementById('overlay');
       let context = output.getContext("2d");
-      output.width = input.width;
-      output.height = input.height;
-      //const detections = await faceapi.detectAllFaces(input, new faceapi.TinyFaceDetectorOptions());
-      const detections = await faceapi.detectAllFaces(input);
-      context.drawImage(input, 0, 0);
-      detections.forEach( d =>
-        context.fillRect(d.box.x - d.box.width * .1, d.box.y - d.box.height * .1, d.box.width * 1.2, d.box.height * 1.2)
-      );
-      let dl = document.getElementById('download');
-      dl.hidden = false;
-      URL.revokeObjectURL(input.src);
-    }
-  }
-
-  async handleFileInput(files: FileList) {
-    if (files) {
-      let dl = document.getElementById('download');
-      dl.hidden = true;
-      this.file = files.item(0);
+      output.width = 600;
+      output.height = 40;
+      context.fillStyle = "#FFA500";
+      context.fillText("processing...", 10, 10);
       let input = document.createElement("img");
       let url = window.URL.createObjectURL(this.file);
       input.src = url;
-      this.blockFaces(input);
+      input.onload = async function () {
+        output.width = input.width;
+        output.height = input.height;
+        const detections = await faceapi.detectAllFaces(input, new faceapi.SsdMobilenetv1Options({ minConfidence: confidence }));
+        context.drawImage(input, 0, 0);
+        context.fillStyle = "#000000";
+        console.log(detections.length);
+        detections.forEach(d =>
+          context.fillRect(d.box.x - d.box.width * .1, d.box.y - d.box.height * .1, d.box.width * 1.2, d.box.height * 1.2)
+        );
+        let dl = document.getElementById('download');
+        dl.hidden = false;
+        URL.revokeObjectURL(input.src);
+      }
     }
+  }
+
+  async handleFileInput(files: FileList, confidence: number) {
+    if (files) {
+      this.hideDownloadButton();
+      this.file = files.item(0);
+      this.blockFaces(confidence);
+    }
+  }
+
+  hideDownloadButton() {
+    let dl = document.getElementById('download');
+    dl.hidden = true;
   }
 
   exportAsImage() {

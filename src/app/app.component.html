@@ -1,6 +1,10 @@
 <div *ngIf="!ready">loading models...</div>
 <div *ngIf="ready">
-    <input type="file" accept="image/*" id="input" (change)="handleFileInput($event.target.files)">
+    <div>
+        <label style="font-weight: bold" for="myslider">Face Recognition Selectivity</label><br />
+        <mat-slider style="width:50%;" #myslider min="5" max="50" step="5" value="50" (change)="blockFaces(myslider.value *.01)"></mat-slider>
+    </div>
+    <input type="file" accept="image/*" id="input" (change)="handleFileInput($event.target.files, myslider.value * .01)">
     <input type="button" id="download" value="download censored image" (click)="exportAsImage()" hidden>
-    <canvas style="width:100%;" id="overlay"></canvas>
+    <canvas style="width:98%; padding: 1%;" id="overlay"></canvas>
 </div>
