@@ -15,10 +15,12 @@ export class AppComponent {
   title = 'face-block';
 
   file: File = null;
+  ready: boolean = false;
 
   async ngOnInit() {
     await faceapi.loadTinyFaceDetectorModel('assets/models');
     await faceapi.loadSsdMobilenetv1Model('assets/models');
+    this.ready = true;
   }
 
   async blockFaces(input : HTMLImageElement) {
@@ -31,18 +33,24 @@ export class AppComponent {
       const detections = await faceapi.detectAllFaces(input);
       context.drawImage(input, 0, 0);
       detections.forEach( d =>
-        context.fillRect(d.box.x, d.box.y, d.box.width, d.box.height)
+        context.fillRect(d.box.x - d.box.width * .1, d.box.y - d.box.height * .1, d.box.width * 1.2, d.box.height * 1.2)
       );
+      let dl = document.getElementById('download');
+      dl.hidden = false;
       URL.revokeObjectURL(input.src);
     }
   }
 
   async handleFileInput(files: FileList) {
-    this.file = files.item(0);
-    let input = document.createElement("img");
-    let url = window.URL.createObjectURL(this.file);
-    input.src = url;
-    this.blockFaces(input);
+    if (files) {
+      let dl = document.getElementById('download');
+      dl.hidden = true;
+      this.file = files.item(0);
+      let input = document.createElement("img");
+      let url = window.URL.createObjectURL(this.file);
+      input.src = url;
+      this.blockFaces(input);
+    }
   }
 
   exportAsImage() {

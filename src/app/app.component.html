@@ -1,2 +1,6 @@
-<input type="file" accept="image/*" id="input" (change)="handleFileInput($event.target.files)">
-<canvas style="width:100%;" id="overlay" (click)="exportAsImage()"></canvas>
+<div *ngIf="!ready">loading models...</div>
+<div *ngIf="ready">
+    <input type="file" accept="image/*" id="input" (change)="handleFileInput($event.target.files)">
+    <input type="button" id="download" value="download censored image" (click)="exportAsImage()" hidden>
+    <canvas style="width:100%;" id="overlay"></canvas>
+</div>
