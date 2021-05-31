@@ -1,8 +1,8 @@
 <div *ngIf="!ready">loading models...</div>
 <div *ngIf="ready">
     <mat-radio-group  #radioGroup="matRadioGroup" (change)="blockFaces(myslider.value *.01, radioGroup.value)">
-        <mat-radio-button value="biden" [checked]="true"><img src="/assets/images/biden.png"></mat-radio-button>
-        <mat-radio-button value="trump"><img src="/assets/images/trump.png"></mat-radio-button>
+        <mat-radio-button value="biden" [checked]="true"><img src="assets/images/biden.png"></mat-radio-button>
+        <mat-radio-button value="trump"><img src="assets/images/trump.png"></mat-radio-button>
     </mat-radio-group>
     <div>
         <label style="font-weight: bold" for="myslider">Face Recognition Selectivity</label><br />
