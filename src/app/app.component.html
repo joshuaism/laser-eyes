@@ -1,10 +1,14 @@
 <div *ngIf="!ready">loading models...</div>
 <div *ngIf="ready">
+    <mat-radio-group  #radioGroup="matRadioGroup" (change)="blockFaces(myslider.value *.01, radioGroup.value)">
+        <mat-radio-button value="biden" [checked]="true"><img src="/assets/images/biden.png"></mat-radio-button>
+        <mat-radio-button value="trump"><img src="/assets/images/trump.png"></mat-radio-button>
+    </mat-radio-group>
     <div>
         <label style="font-weight: bold" for="myslider">Face Recognition Selectivity</label><br />
-        <mat-slider style="width:50%;" #myslider min="5" max="50" step="5" value="50" (change)="blockFaces(myslider.value *.01)"></mat-slider>
+        <mat-slider style="width:50%;" #myslider min="5" max="50" step="5" value="50" (change)="blockFaces(myslider.value *.01, radioGroup.value)"></mat-slider>
     </div>
-    <input type="file" accept="image/*" id="input" (change)="handleFileInput($event.target.files, myslider.value * .01)">
+    <input type="file" accept="image/*" id="input" (change)="handleFileInput($event.target.files, myslider.value * .01, radioGroup.value)">
     <input type="button" id="download" value="download image" (click)="exportAsImage()" hidden>
     <canvas style="width:98%; padding: 1%;" id="overlay"></canvas>
 </div>

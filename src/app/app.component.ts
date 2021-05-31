@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { saveAs } from 'file-saver';
-import { MatSlider } from '@angular/material/slider'
 
 // per https://github.com/justadudewhohacks/face-api.js/issues/519#issuecomment-578485852
 //import * as faceapi from 'face-api.js';
@@ -24,7 +23,7 @@ export class AppComponent {
     this.ready = true;
   }
 
-  async blockFaces(confidence: number) {
+  async blockFaces(confidence: number, mask: string) {
     if (this.file) {
       this.hideDownloadButton();
       let output = <HTMLCanvasElement>document.getElementById('overlay');
@@ -36,7 +35,7 @@ export class AppComponent {
       let input = document.createElement("img");
       let url = window.URL.createObjectURL(this.file);
       let source = document.createElement("img");
-      source.src = "assets/images/biden.png";
+      source.src = "assets/images/" + mask + ".png";
       input.src = url;
       input.onload = async function () {
         output.width = input.width;
@@ -55,11 +54,11 @@ export class AppComponent {
     }
   }
 
-  async handleFileInput(files: FileList, confidence: number) {
+  async handleFileInput(files: FileList, confidence: number, mask: string) {
     if (files) {
       this.hideDownloadButton();
       this.file = files.item(0);
-      this.blockFaces(confidence);
+      this.blockFaces(confidence, mask);
     }
   }
 
