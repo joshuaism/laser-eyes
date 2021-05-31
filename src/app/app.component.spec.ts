@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'face-block'`, () => {
+  it(`should have as title 'face-mask'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('face-block');
+    expect(app.title).toEqual('face-mask');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('face-block app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain('face-mask app is running!');
   });
 });

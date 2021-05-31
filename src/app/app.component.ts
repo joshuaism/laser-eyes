@@ -13,7 +13,7 @@ declare var faceapi:any;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'face-block';
+  title = 'face-mask';
 
   file: File = null;
   ready: boolean = false;
@@ -35,6 +35,8 @@ export class AppComponent {
       context.fillText("processing...", 10, 10);
       let input = document.createElement("img");
       let url = window.URL.createObjectURL(this.file);
+      let source = document.createElement("img");
+      source.src = "assets/images/biden.png";
       input.src = url;
       input.onload = async function () {
         output.width = input.width;
@@ -43,9 +45,9 @@ export class AppComponent {
         context.drawImage(input, 0, 0);
         context.fillStyle = "#000000";
         console.log(detections.length);
-        detections.forEach(d =>
-          context.fillRect(d.box.x - d.box.width * .1, d.box.y - d.box.height * .1, d.box.width * 1.2, d.box.height * 1.2)
-        );
+        detections.forEach(d => {
+          context.drawImage(source,  d.box.x - d.box.width * .4, d.box.y - d.box.height * .15, source.width / source.height * d.box.width * 1.8, source.height / source.width * d.box.width * 1.8);
+        });
         let dl = document.getElementById('download');
         dl.hidden = false;
         URL.revokeObjectURL(input.src);
@@ -71,7 +73,7 @@ export class AppComponent {
       return;
     }
     let filetype = this.file.type;
-    let filename = "censored_" + this.file.name;
+    let filename = "masked_" + this.file.name;
     let output = <HTMLCanvasElement>document.getElementById('overlay');
     var image = output.toDataURL(filetype);
     saveAs(image, filename);
