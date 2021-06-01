@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
 import { saveAs } from 'file-saver';
 
-// per https://github.com/justadudewhohacks/face-api.js/issues/519#issuecomment-578485852
-//import * as faceapi from 'face-api.js';
-//import { TNetInput } from 'face-api.js';
-declare var faceapi:any;
+import * as faceapi from 'face-api.js';
 
 @Component({
   selector: 'app-root',
@@ -18,8 +15,9 @@ export class AppComponent {
   ready: boolean = false;
 
   async ngOnInit() {
-    await faceapi.loadTinyFaceDetectorModel('assets/models');
-    await faceapi.loadSsdMobilenetv1Model('assets/models');
+    await faceapi.nets.tinyFaceDetector.loadFromUri('assets/models');
+    await faceapi.nets.faceLandmark68TinyNet.loadFromUri('assets/models');
+    await faceapi.nets.ssdMobilenetv1.loadFromUri('assets/models');
     this.ready = true;
   }
 
@@ -40,13 +38,23 @@ export class AppComponent {
       input.onload = async function () {
         output.width = input.width;
         output.height = input.height;
-        const detections = await faceapi.detectAllFaces(input, new faceapi.SsdMobilenetv1Options({ minConfidence: confidence }));
+        const detections = await faceapi.detectAllFaces(input, new faceapi.SsdMobilenetv1Options({ minConfidence: confidence })).withFaceLandmarks(true);
         context.drawImage(input, 0, 0);
         context.fillStyle = "#000000";
         console.log(detections.length);
+        detections.sort((a, b) => {return a.detection.box.area - b.detection.box.area});
         detections.forEach(d => {
-          context.drawImage(source,  d.box.x - d.box.width * .4, d.box.y - d.box.height * .15, source.width / source.height * d.box.width * 1.8, source.height / source.width * d.box.width * 1.8);
+          let box = d.detection.box;
+          context.save();
+          context.translate(box.x + box.width / 2, box.y + box.height / 2);
+          context.rotate(getAngle(d.landmarks));
+          //flip
+          //context.scale(-1, 1);
+          context.drawImage(source, -box.width * .9, -source.height / source.width * box.width * .9, box.width * 1.8, source.height / source.width * box.width * 1.8);
+          context.restore();
         });
+        //faceapi.draw.drawFaceLandmarks(output, detections);
+        //faceapi.draw.drawDetections(output, detections);
         let dl = document.getElementById('download');
         dl.hidden = false;
         URL.revokeObjectURL(input.src);
@@ -78,3 +86,13 @@ export class AppComponent {
     saveAs(image, filename);
   }
 }
+
+function getAngle(landmarks: faceapi.FaceLandmarks68) {
+  const jawline = landmarks.getJawOutline()
+  const jawLeft = jawline[0];
+  const jawRight = jawline.splice(-1)[0];
+  const adjacent = jawRight.x - jawLeft.x;
+  const opposite = jawRight.y - jawLeft.y;
+  return Math.atan2(opposite, adjacent);
+}
+
