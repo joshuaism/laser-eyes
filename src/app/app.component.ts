@@ -9,10 +9,11 @@ import * as faceapi from 'face-api.js';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'face-mask';
+  title = 'laser-eyes';
 
   file: File = null;
   ready: boolean = false;
+  glows: string[] = ['red','blue','pink','white','yellow','purple','green','glow'];
 
   async ngOnInit() {
     await faceapi.nets.tinyFaceDetector.loadFromUri('assets/models');
@@ -44,14 +45,12 @@ export class AppComponent {
         console.log(detections.length);
         detections.sort((a, b) => {return a.detection.box.area - b.detection.box.area});
         detections.forEach(d => {
-          let box = d.detection.box;
-          context.save();
-          context.translate(box.x + box.width / 2, box.y + box.height / 2);
-          context.rotate(getAngle(d.landmarks));
-          //flip
-          //context.scale(-1, 1);
-          context.drawImage(source, -box.width * .9, -source.height / source.width * box.width * .9, box.width * 1.8, source.height / source.width * box.width * 1.8);
-          context.restore();
+          let left = getCenter(d.landmarks.getLeftEye());
+          let right = getCenter(d.landmarks.getRightEye());
+          let width = d.detection.box.width;
+          context.drawImage(source, left.x - width, left.y - width, width*2, width*2);
+          context.drawImage(source, right.x - width, right.y - width, width*2, width*2);
+          
         });
         //faceapi.draw.drawFaceLandmarks(output, detections);
         //faceapi.draw.drawDetections(output, detections);
@@ -87,12 +86,12 @@ export class AppComponent {
   }
 }
 
-function getAngle(landmarks: faceapi.FaceLandmarks68) {
-  const jawline = landmarks.getJawOutline()
-  const jawLeft = jawline[0];
-  const jawRight = jawline.splice(-1)[0];
-  const adjacent = jawRight.x - jawLeft.x;
-  const opposite = jawRight.y - jawLeft.y;
-  return Math.atan2(opposite, adjacent);
+function getCenter(array: faceapi.Point[]) {
+  let x = array.reduce((acc, v) => acc + v.x / array.length, 0);
+  let y = array.reduce((acc, v) => acc + v.y / array.length, 0);
+  return {
+    x, 
+    y
+  };
 }
 

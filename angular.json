@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "face-mask": {
+    "laser-eyes": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/face-mask",
+            "outputPath": "dist/laser-eyes",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -68,18 +68,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "face-mask:build"
+            "browserTarget": "laser-eyes:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "face-mask:build:production"
+              "browserTarget": "laser-eyes:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "face-mask:build"
+            "browserTarget": "laser-eyes:build"
           }
         },
         "test": {
@@ -120,11 +120,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "face-mask:serve"
+            "devServerTarget": "laser-eyes:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "face-mask:serve:production"
+              "devServerTarget": "laser-eyes:serve:production"
             }
           }
         },
@@ -135,5 +135,5 @@
       }
     }
   },
-  "defaultProject": "face-mask"
+  "defaultProject": "laser-eyes"
 }
